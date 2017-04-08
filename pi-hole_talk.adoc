@@ -1,0 +1,46 @@
+= Pi-hole: Blocking b(ad) stuff via DNS
+Chuck Frain <chuck@chuckfrain.net>
+:toc: left
+
+== Introduction
+
+This talk is gear to help you block unwanted sites from your network at the DNS level.
+
+== What is DNS?
+
+DNS stands for Domain Name System.
+It translates the IP address of a computer to a hostname.
+
+calug.org translates to 173.236.168.90
+google.com translates to 172.217.7.238
+
+== Ways to install Pi-hole
+
+All of the major distros and their derivatives are supported with the install script.
+
+. If you have a running Linux system:
+
+* `curl -sSL https://install.pi-hole.net | bash`
+
+. Download script and install
+
+* `wget -O basic-install.sh https://install.pi-hole.net`
+* `bash basic-install.sh`
+
+. Docker Image
+
+* `docker pull diginc/pi-hole`
+
+== Initial Configuration
+
+Performed at the command line.
+
+The basic steps are:
+
+
+== Web Configuration
+
+== Local Network Considerations
+
+== Updating and Adding Lists
+
