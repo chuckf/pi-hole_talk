@@ -34,8 +34,20 @@ All of the major distros and their derivatives are supported with the install sc
 == Initial Configuration
 
 Performed at the command line.
+We will be using the following command:
 
-The basic steps are:
+`curl -sSL https://install.pi-hole.net | bash`
+
+The basic steps after running the command are:
+
+. sudo to the root user to install packages
+. Step through the configuration screens with the following being the notable ones
+. Select DNS server(s)
+.. If using a local DNS server other than pi-hole, point to that one using the custom option
+. Select static IP address
+. Do you want to use the web admin interface? Defaults to yes
+.. Not https by default
+. Enable logging of queries? Defaults to yes
 
 
 == Web Configuration
@@ -44,3 +56,28 @@ The basic steps are:
 
 == Updating and Adding Lists
 
+== Appendix
+
+=== Initial Configuration Notes
+
+After running the 'curl' command
+
+. sudo to the root user
+
+[source,bash]
+pi@raspberrypi:~ $ curl -sSL https://install.pi-hole.net | bash
+:::
+::: Script called with non-root privileges. The Pi-hole installs server packages and configures
+::: system networking, it requires elevated rights. Please check the contents of the script for
+::: any concerns with this requirement. Please be sure to download this script from a trusted source.
+:::
+::: Detecting the presence of the sudo utility for continuation of this install...
+::: Utility sudo located.
+:::
+::: You are root.
+
+. Begin walking through the configuration options
+
+image::images/pi-hole_talk-76240.png[]
+image::images/pi-hole_talk-2-donations.png[]
+image::images/pi-hole_talk-initializing_network.png[]
