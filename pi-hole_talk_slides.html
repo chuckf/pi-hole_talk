@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=" http-equiv="Content-Type" />
+<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" />
+<meta content="Asciidoctor 1.5.5" name="generator" />
+<meta content="Chuck Frain" name="author" />
+<title>Pi-hole: Blocking b(ad) stuff via DNS</title>
+<link href="deck.js/core/deck.core.css" rel="stylesheet" />
+<link href="deck.js/extensions/scale/deck.scale.css" media="screen" rel="stylesheet" />
+<link href="deck.js/extensions/toc/deck.toc.css" media="screen" rel="stylesheet" />
+<link href="deck.js/themes/style/web-2.0.css" media="screen" rel="stylesheet" />
+<link href="deck.js/themes/transition/fade.css" media="screen" rel="stylesheet" />
+<link href="deck.js/core/print.css" media="print" rel="stylesheet" />
+<script src="deck.js/modernizr.custom.js"></script>
+</head>
+<body class="article">
+<div class="deck-container">
+<section class="slide" id="title-slide">
+<h1>Pi-hole: Blocking b(ad) stuff via DNS</h1>
+<span id="author">Chuck Frain</span>
+<br />
+<span id="email"><a href="mailto:chuck@chuckfrain.net">chuck@chuckfrain.net</a></span>
+<br />
+</section>
+<section class="slide" id="_introduction">
+<h2>Introduction</h2>
+<div class="paragraph"><p>This talk is to help you block unwanted sites from your network at the DNS level.
+We will go over at a high level what DNS does and how Pi-hole works.</p></div>
+<div class="paragraph"><p>As time and the live-demo laws permit, we will demonstrate Pi-hole.</p></div>
+</section>
+<section class="slide" id="_what_is_dns">
+<h2>What is DNS?</h2>
+<div class="paragraph"><p>DNS stands for Domain Name System.
+It translates the IP address of a computer to a hostname.</p></div>
+<div class="paragraph"><p>calug.org translates to 173.236.168.90</p></div>
+<div class="paragraph"><p>google.com translates to 172.217.7.238</p></div>
+</section>
+<section class="slide" id="_what_is_pi_hole">
+<h2>What is Pi-hole</h2>
+<div class="listingblock">
+<div class="content">
+<pre><code>The Pi-hole is an advertising-aware DNS/Web server. If an ad domain is queried, a small Web page or GIF is delivered in place of the advertisement.</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>The install script works best on Debian, Fedora, and their derivatives</li>
+<li><p>
+Uses dnsmasq as the DNS server software<div class="ulist">
+<ul>
+<li>I&#8217;ve seen some posts indicating bind will be an option in the future</li>
+</ul>
+</div></p></li>
+<li>Primarily used to block malware and advertising domains</li>
+<li>Accommodates Whitelists and Blacklists</li>
+<li>Can act as a DHCP server</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="_ways_to_install_pi_hole">
+<h2>Ways to install Pi-hole</h2>
+<div class="paragraph"><p>Debian, Fedora, and their derivatives are supported with the install script.
+Others can be made to work with some massaging.</p></div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>If you have a running Linux system:</p>
+<div class="ulist">
+<ul>
+<li><code>curl -sSL <a class="bare" href="https://install.pi-hole.net">https://install.pi-hole.net</a> | bash</code></li>
+</ul>
+</div>
+</li>
+<li>
+<p>Download script and install</p>
+<div class="ulist">
+<ul>
+<li><code>wget -O basic-install.sh <a class="bare" href="https://install.pi-hole.net">https://install.pi-hole.net</a></code></li>
+<li><code>bash basic-install.sh</code></li>
+</ul>
+</div>
+</li>
+<li>
+<p>Docker Image</p>
+<div class="ulist">
+<ul>
+<li><code>docker pull diginc/pi-hole</code></li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+</section>
+<section class="slide" id="_initial_configuration">
+<h2>Initial Configuration</h2>
+<div class="paragraph"><p>Performed at the command line.
+We will be using the following command:</p></div>
+<div class="paragraph"><p><code>curl -sSL <a class="bare" href="https://install.pi-hole.net">https://install.pi-hole.net</a> | bash</code></p></div>
+<div class="paragraph"><p>The basic steps the script performs is:</p></div>
+<div class="olist arabic">
+<ol class="arabic">
+<li class="slide">
+sudo to the root user to install packages
+</li>
+<li class="slide">
+Step through the configuration screens with the following being the notable ones
+</li>
+<li class="slide">
+<p>Select DNS server(s)</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+If using another DNS server for local resolution other than pi-hole, point to that one using the custom option
+</li>
+</ol>
+</div>
+</li>
+<li class="slide">
+Select static IP address
+</li>
+<li class="slide">
+<p>Do you want to use the web admin interface? Defaults to yes</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+Not https by default
+</li>
+</ol>
+</div>
+</li>
+<li class="slide">
+Enable logging of queries? Defaults to yes
+</li>
+</ol>
+</div>
+</section>
+<section class="slide" id="_post_install">
+<h2>Post Install</h2>
+<div class="paragraph"><p>After the pi-hole has been configured, configure your DHCP server to assign the pi-hole static IP address</p></div>
+<div class="imageblock">
+<div class="content">
+<img alt="pi hole talk dhcp servers" src="images/pi-hole_talk-dhcp_servers.png" />
+</div>
+</div>
+</section>
+<section class="slide" id="_web_configuration">
+<h2>Web Configuration</h2>
+<div class="imageblock">
+<div class="content">
+<img alt="pi hole talk config page" src="images/pi-hole_talk-config_page.png" />
+</div>
+</div>
+</section>
+<section class="slide" id="_upstream_dns_considerations">
+<h2>Upstream DNS Considerations</h2>
+<div class="imageblock">
+<div class="content">
+<img alt="pi hole talk dns settings" src="images/pi-hole_talk-dns_settings.png" />
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+If you&#8217;re using local DNS on another server configure that as your upstream
+</li>
+<li>
+If you&#8217;re using your ISP&#8217;s or other specific DNS server, configure that as your upstream
+</li>
+<li>
+If you&#8217;re open to using a public DNS server, select the appropriate one(s)
+</li>
+</ol>
+</div>
+</section>
+<section class="slide" id="_updating_and_adding_lists">
+<h2>Updating and Adding Lists</h2>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+Connect to your pi-hole server&#8217;s shell (console, ssh)
+</li>
+<li>
+<p>Copy <code>adlists.default</code> to <code>adlists.list</code> using the command
+<code>sudo cp /etc/pihole/adlists.default /etc/pihole/adlists.list</code></p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+Skipping this step will cause the customization to be overwritten on updates
+</li>
+</ol>
+</div>
+</li>
+<li>
+Edit the <code>/etc/pihole/adlists.list</code> to comment or uncomment (add/remove the # at the beginning of a line) as appropriate
+</li>
+<li>
+Add a new line if you are adding a previously unknown list
+</li>
+</ol>
+</div>
+</section>
+<section class="slide" id="_resources">
+<h2>Resources</h2>
+<div class="paragraph"><p><a class="bare" href="https://pi-hole.net">https://pi-hole.net</a> Pi-hole home page</p></div>
+<div class="paragraph"><p><a class="bare" href="https://github.com/pi-hole">https://github.com/pi-hole</a> Pi-hole Github</p></div>
+<div class="paragraph"><p><a class="bare" href="https://reddit.com/r/pihole">https://reddit.com/r/pihole</a> Pi-hole subreddit</p></div>
+<div class="paragraph"><p><strong>Links to this presentation</strong></p></div>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:50%" />
+<col style="width:50%" />
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">html</th>
+<th class="tableblock halign-center valign-top">github</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a class="bare" href="https://goo.gl/9HIZfN">https://goo.gl/9HIZfN</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a class="bare" href="https://github.com/chuckf/pi-hole_talk">https://github.com/chuckf/pi-hole_talk</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><div><div class="imageblock">
+<div class="content">
+<img alt="pres html" src="images/pres_html.png" />
+</div>
+</div></div></td>
+<td class="tableblock halign-center valign-top"><div><div class="imageblock">
+<div class="content">
+<img alt="github" src="images/github.png" />
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</section>
+</div>
+<script src="deck.js/jquery.min.js"></script>
+<script src="deck.js/core/deck.core.js"></script>
+<script src="deck.js/extensions/scale/deck.scale.js"></script>
+<script src="deck.js/extensions/split/deck.split.js"></script>
+<script src="deck.js/extensions/toc/deck.toc.js"></script>
+<div class="deck-toc"></div>
+<script type="text/javascript">
+  //<![CDATA[
+    (function($, deck, undefined) {
+      $.deck.defaults.keys['previous'] = [8, 33, 37, 39];
+      $.deck.defaults.keys['next'] = [13, 32, 34, 39];
+    
+      $.extend(true, $[deck].defaults, {
+          countNested: false
+      });
+    
+      $.deck('.slide');
+    })(jQuery, 'deck');
+  //]]>
+</script>
+<style type="text/css">
+  /*<![CDATA[*/
+    .slide.canvas-image {
+    -moz-background-size: cover;
+    -webkit-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    display: -moz-box;
+    display: -webkit-box;
+    display: -ms-box;
+    display: box;
+    -moz-box-orient: vertical;
+    -webkit-box-orient: vertical;
+    -ms-box-orient: vertical;
+    box-orient: vertical;
+    -moz-box-align: start;
+    -webkit-box-align: start;
+    -ms-box-align: start;
+    box-align: start;
+    -moz-box-pack: start;
+    -webkit-box-pack: start;
+    -ms-box-pack: start;
+    box-pack: start;}
+    
+    .bottom-left {
+      left: 1%;
+      bottom: 20%; }
+    
+    .top-left {
+      left: 1%;
+      top: 20%; }
+    
+    .bottom-right {
+      right: 1%;
+      bottom: 20%; }
+    
+    .top-right {
+      right: 1%;
+      top: 20%; }
+    
+    .center-up {
+      right: 50%;
+      top: 1%;
+    }
+    
+    .center-down {
+      right: 50%;
+      bottom: 1%;
+    }
+    .canvas-image .canvas-caption p {
+      text-align: center;
+      padding-top: 0;
+      padding: 0;
+      -moz-transform: none;
+      -webkit-transform: none;
+      -o-transform: none;
+      -ms-transform: none;
+      transform: none;
+      display: inline;
+      position: absolute;
+      background-color: rgba(0, 0, 0, 0.7);
+      font-weight: bold;
+      font-size: 58px;
+      -webkit-box-shadow: 2px 2px 2px #000;
+      -moz-box-shadow: 2px 2px 2px #000;
+      box-shadow: 2px 2px 2px #000;
+      padding: 1rem;
+      color: white; }
+    kbd.keyseq { color: #555555; }
+    kbd:not(.keyseq) {
+      display: inline-block;
+      color: #222222;
+      font-size: 0.7em;
+      line-height: 1.4;
+      background-color: #F7F7F7;
+      border: 1px solid #ccc;
+      -webkit-border-radius: 3px;
+      border-radius: 3px;
+      -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 2px white inset;
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 2px white inset;
+      margin: -0.15em 0.15em 0 0.15em;
+      padding: 0.2em 0.6em;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+    kbd kbd:first-child { margin-left: 0; }
+    kbd kbd:last-child { margin-right: 0; }
+  /*]]>*/
+</style>
+</body>
+</html>

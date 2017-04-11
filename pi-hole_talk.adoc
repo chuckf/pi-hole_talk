@@ -24,7 +24,7 @@ google.com translates to 172.217.7.238
 ----
 The Pi-hole is an advertising-aware DNS/Web server. If an ad domain is queried, a small Web page or GIF is delivered in place of the advertisement.
 ----
-* The install script works best on Debian, Fedora, and their dervitives
+* The install script works best on Debian, Fedora, and their derivatives
 * Uses dnsmasq as the DNS server software
 ** I've seen some posts indicating bind will be an option in the future
 * Primarily used to block malware and advertising domains
@@ -58,6 +58,7 @@ We will be using the following command:
 
 The basic steps the script performs is:
 
+[%step]
 . sudo to the root user to install packages
 . Step through the configuration screens with the following being the notable ones
 . Select DNS server(s)
@@ -66,8 +67,10 @@ The basic steps the script performs is:
 . Do you want to use the web admin interface? Defaults to yes
 .. Not https by default
 . Enable logging of queries? Defaults to yes
-<<<<
-. After the pi-hole has been configured, configure your DHCP server to assign the pi-hole static IP address
+
+== Post Install
+
+After the pi-hole has been configured, configure your DHCP server to assign the pi-hole static IP address
 
 image::images/pi-hole_talk-dhcp_servers.png[]
 
@@ -100,6 +103,18 @@ https://github.com/pi-hole Pi-hole Github
 
 https://reddit.com/r/pihole Pi-hole subreddit
 
+*Links to this presentation*
+
+[cols=2*^,options="header"]
+|===
+|html |github
+|https://goo.gl/9HIZfN |https://github.com/chuckf/pi-hole_talk
+a|image::images/pres_html.png[]
+// a|image::images/pres_slides.png[]
+a|image::images/github.png[]
+|===
+
+ifdef::backend-html5[]
 == Appendix
 
 === Setting up Digital Ocean Droplet (CentOS 7)
@@ -117,3 +132,4 @@ yum update -y
 [source,bash]
 systemctl unmask NetworkManager
 systemctl start NetworkManager
+endif::[]
